@@ -5,7 +5,6 @@ from __future__ import print_function
 from itertools import product
 
 
-
 def solve_sudoku(size, grid):
     """ An efficient Sudoku solver using Algorithm X.
 
