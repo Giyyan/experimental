@@ -18,23 +18,35 @@ def count_day(start_date, wdays, days={0, 1, 2, 3, 4}):
     return week_range
 
 
-def get_last_day(start_date, work_days):
+def get_count_day(first_day, work_days):
     """
-    Дату последнего дня после wdays будних дней
+    Количество календарных дней начиная с дня недели(first_day) и имея work_days рабочих дней
+    @first_day - int(0-6)
+    @work_days - int
+
+    @return int
     """
     work_days = abs(work_days)
+    if first_day < 0:
+        first_day = 0
+    if first_day > 6:
+        first_day = 6
     f_week = work_days / 5 + 1
-    first_day = start_date.weekday()
-
     if work_days + first_day > 5 and f_week == 1:
         f_week = 2
-
     week_range = (range(7) * f_week)[first_day:]
     weekends = (7 - 5) * (f_week - 1)
     if first_day > 4:
         weekends -= 7 - first_day
     last_day = len(week_range[first_day:]) - work_days - weekends
-    return start_date + datetime.timedelta(days=len(week_range[first_day:-last_day]))
+    return len(week_range[first_day:-last_day])
+
+
+def get_last_day(start_date, work_days):
+    """
+    Дату последнего дня после wdays будних дней
+    """
+    return start_date + datetime.timedelta(days=get_count_day(start_date.weekday(), work_days))
 
 
 def work_day_count(start_date, work_days, need_days={0, 1, 2, 3, 4}):
