@@ -18,21 +18,22 @@ def count_day(start_date, wdays, days={0, 1, 2, 3, 4}):
     return week_range
 
 
-def get_last_day(start_date, wdays):
+def get_last_day(start_date, work_days):
     """
     Дату последнего дня после wdays будних дней
     """
-    f_week = wdays / 5 + 1
+    work_days = abs(work_days)
+    f_week = work_days / 5 + 1
     first_day = start_date.weekday()
 
-    if abs(wdays + first_day) > 5 and f_week == 1:
+    if work_days + first_day > 5 and f_week == 1:
         f_week = 2
 
     week_range = (range(7) * f_week)[first_day:]
-    weenends = (7 - 5) * (f_week - 1)
+    weekends = (7 - 5) * (f_week - 1)
     if first_day > 4:
-        weenends -= 7 - first_day
-    last_day = len(week_range[first_day:]) - wdays - weenends
+        weekends -= 7 - first_day
+    last_day = len(week_range[first_day:]) - work_days - weekends
     return start_date + datetime.timedelta(days=len(week_range[first_day:-last_day]))
 
 
@@ -46,20 +47,20 @@ def work_day_count(start_date, work_days, need_days={0, 1, 2, 3, 4}):
 
 
 def _dedline_start(date, days):
-        start_line = datetime.datetime.now(pytz.utc)
-        if days and days > 0:
-            start_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=pytz.utc)
-            start_line = start_date
-            count = 0
-            while count < days:
-                if datetime.datetime.weekday(start_line + datetime.timedelta(days=1)) == 5:
-                    start_line = start_line + datetime.timedelta(days=3)
-                elif datetime.datetime.weekday(start_line + datetime.timedelta(days=1)) == 6:
-                    start_line = start_line + datetime.timedelta(days=2)
-                else:
-                    start_line = start_line + datetime.timedelta(days=1)
-                count += 1
-        return start_line
+    start_line = datetime.datetime.now(pytz.utc)
+    if days and days > 0:
+        start_date = datetime.datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=pytz.utc)
+        start_line = start_date
+        count = 0
+        while count < days:
+            if datetime.datetime.weekday(start_line + datetime.timedelta(days=1)) == 5:
+                start_line = start_line + datetime.timedelta(days=3)
+            elif datetime.datetime.weekday(start_line + datetime.timedelta(days=1)) == 6:
+                start_line = start_line + datetime.timedelta(days=2)
+            else:
+                start_line = start_line + datetime.timedelta(days=1)
+            count += 1
+    return start_line
 
 
 print get_last_day(datetime.date(2013, 9, 2), 3)
